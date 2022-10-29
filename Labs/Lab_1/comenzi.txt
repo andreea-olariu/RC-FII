@@ -1,0 +1,9 @@
+1. ls -t
+2. help cd
+3. find . -name "a*.*"
+4. chmod u=rwx,g=r,o= tmp
+   chmod 0740 tmp2
+5. stat file | cut -d: -f3 | grep Links | cut -d" " -f6
+6. NIMIC
+7. cut -d: -f1 /etc/passwd | grep a$
+8. find / -name "*.c"
