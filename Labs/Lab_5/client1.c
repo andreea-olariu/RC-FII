@@ -1,8 +1,3 @@
-/* cliTCPIt.c - Exemplu de client TCP
-   Trimite un nume la server; primeste de la server "Hello nume".
-         
-   Autor: Lenuta Alboaie  <adria@infoiasi.ro> (c)2009
-*/
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -19,12 +14,11 @@ extern int errno;
 
 /* portul de conectare la server*/
 int port;
-
 int main (int argc, char *argv[])
 {
-  int sd;			                 // descriptorul de socket
-  struct sockaddr_in server;	 // structura folosita pentru conectare 
-  char msg[100];		           // mesajul trimis
+  int sd;			// descriptorul de socket
+  struct sockaddr_in server;	// structura folosita pentru conectare 
+  int numar = 0;
 
   /* exista toate argumentele in linia de comanda? */
   if (argc != 3)
@@ -59,13 +53,13 @@ int main (int argc, char *argv[])
     }
 
   /* citirea mesajului */
-  bzero (msg, 100);
-  printf ("[client]Introduceti un nume: ");
+  printf ("[client]Introduceti un numar: ");
   fflush (stdout);
-  read (0, msg, 100);
+
+    scanf("%d", &numar);
   
   /* trimiterea mesajului la server */
-  if (write (sd, msg, 100) <= 0)
+  if (write (sd, &numar, 100) <= 0)
     {
       perror ("[client]Eroare la write() spre server.\n");
       return errno;
@@ -73,13 +67,21 @@ int main (int argc, char *argv[])
 
   /* citirea raspunsului dat de server 
      (apel blocant pina cind serverul raspunde); Atentie si la cum se face read- vezi cursul! */
-  if (read (sd, msg, 100) < 0)
+
+    int ordine = 0;
+  if (read (sd, &ordine, 4) < 0)
     {
-      perror ("[client]Eroare la read() de la server.\n");
+      perror ("[client]Eroare la read() de la server 1.\n");
+      return errno;
+    }
+    int x = 0;
+    if (read (sd, &x, 4) < 0)
+    {
+      perror ("[client]Eroare la read() de la server 1.\n");
       return errno;
     }
   /* afisam mesajul primit */
-  printf ("[client]Mesajul primit este: %s\n", msg);
+  printf ("[client]Clientul cu  ordinul %d afiseaza nr incrementat %d\n", ordine, x);
 
   /* inchidem conexiunea, am terminat */
   close (sd);

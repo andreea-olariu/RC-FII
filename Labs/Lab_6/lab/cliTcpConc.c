@@ -1,4 +1,4 @@
-/* cliTCPIt.c - Exemplu de client TCP
+/* cliTcpConc.c - Exemplu de client TCP
    Trimite un nume la server; primeste de la server "Hello nume".
          
    Autor: Lenuta Alboaie  <adria@infoiasi.ro> (c)2009
@@ -6,13 +6,13 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
-#include <arpa/inet.h>
 #include <errno.h>
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <netdb.h>
 #include <string.h>
+#include <arpa/inet.h>
 
 /* codul de eroare returnat de anumite apeluri */
 extern int errno;
@@ -22,9 +22,9 @@ int port;
 
 int main (int argc, char *argv[])
 {
-  int sd;			                 // descriptorul de socket
-  struct sockaddr_in server;	 // structura folosita pentru conectare 
-  char msg[100];		           // mesajul trimis
+  int sd;			// descriptorul de socket
+  struct sockaddr_in server;	// structura folosita pentru conectare 
+  char msg[100];		// mesajul trimis
 
   /* exista toate argumentele in linia de comanda? */
   if (argc != 3)
@@ -72,7 +72,7 @@ int main (int argc, char *argv[])
     }
 
   /* citirea raspunsului dat de server 
-     (apel blocant pina cind serverul raspunde); Atentie si la cum se face read- vezi cursul! */
+     (apel blocant pina cind serverul raspunde) */
   if (read (sd, msg, 100) < 0)
     {
       perror ("[client]Eroare la read() de la server.\n");

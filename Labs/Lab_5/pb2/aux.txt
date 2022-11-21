@@ -1,0 +1,6 @@
+aux.txt
+client
+client.c
+ex2.txt
+server
+server.c
