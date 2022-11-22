@@ -11,7 +11,7 @@
 #define SIZE 101
 
 void ask_file_source(char*, int, char*);
-void ask_download(char*, char*);
+void ask_download(char*, int, char*, int);
 
 int main(int argc, char* argv[]) {
     int sd;
@@ -30,6 +30,8 @@ int main(int argc, char* argv[]) {
 
     bind(sd, (const struct sockaddr*)&server, sizeof(server));
     listen(sd, 1);
+
+    int fdest;
     while(1) {
         int client;
         int len;
@@ -42,9 +44,13 @@ int main(int argc, char* argv[]) {
             if(strcmp(path, "") == 0) {
                 ask_file_source(path, client, extension);
                 strcat(download, extension);
+
+                fdest = open(download, O_WRONLY | O_CREAT, 0777);
+                ask_download(download, client, path, fdest);
                 write(p[1], path, SIZE);
+            } else {
+                ask_download(download, client, path, fdest);
             }
-            ask_download(path, download);
             close(p[1]);
         } else {
             close(p[1]);
@@ -68,6 +74,7 @@ void ask_file_source(char* path, int client, char* extension) {
     }
     printf("Path-ul este: %s\n", path); fflush(stdout);
 
+    strcpy(extension, "");
     int ok = 0;
     int idx = 0;
     for(int i = 0; path[i] != '\0'; i++) {
@@ -81,18 +88,13 @@ void ask_file_source(char* path, int client, char* extension) {
     extension[idx] = '\0';
 }
 
-void ask_download(char* path, char* download) {
-    int fsursa = open(path, O_RDONLY);
-    int fdest;
-    fdest = open(download, O_WRONLY | O_CREAT, 0777);
-    while(1) {
-        char ch;
-        int cod = read(fsursa, &ch, 1);
-        if(cod <= 0) {
-            break;
-        }
+void ask_download(char* download, int client, char* path, int fdest) {
+    write(client, path, SIZE);
+    char ch;
+    while(read(client, &ch, 1) == 1) {
         write(fdest, &ch, 1);
     }
+    strcpy(path, "");
+    strcpy(download, "download");
     close(fdest);
-    close(fsursa);
 }
